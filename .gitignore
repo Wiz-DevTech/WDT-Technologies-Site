@@ -53,7 +53,7 @@ prompt
 server.log
 
 #Environment and local files:
-
+.env.local
 .env*.local
 .env.development.local
 .env.test.local
