@@ -133,24 +133,23 @@ class AnalyticsTracker {
     });
   }
 
-  private trackCTAClicks() {
-    if (typeof window === 'undefined') return;
+private trackCTAClicks() {
+  if (typeof window === 'undefined') return;
 
-    document.addEventListener('click', (e) => {
-      const target = e.target as HTMLElement;
-      const ctaButton = target.closest('a[href*="calendly"], button[data-cta="true"]');
-
-      if (ctaButton) {
-        const sectionId = target.closest('section')?.id;
-        this.track('cta_click', {
-          buttonText: ctaButton.textContent?.trim(),
-          buttonType: ctaButton.tagName.toLowerCase(),
-          href: (ctaButton as HTMLAnchorElement).href,
-          location: sectionId ?? 'hero',
-        });
-      }
-    });
-  }
+  document.addEventListener('click', (e) => {
+    const target = e.target as HTMLElement;
+    const ctaButton = target.closest('a[href*="calendly"], button[data-cta="true"]');
+    
+    if (ctaButton) {
+      this.track('cta_click', {
+        buttonText: ctaButton.textContent?.trim(),
+        buttonType: ctaButton.tagName.toLowerCase(),
+        href: (ctaButton as HTMLAnchorElement).href,
+        location: target.closest('section')?.id || 'hero', // Fixed line
+      });
+    }
+  });
+}
 
   private trackFormSubmissions() {
     if (typeof window === 'undefined') return;
