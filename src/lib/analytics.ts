@@ -33,7 +33,7 @@ class AnalyticsTracker {
 
   private getUTMParameters(): Record<string, string> {
     if (typeof window === 'undefined') return {};
-    
+
     const params = new URLSearchParams(window.location.search);
     return {
       utmSource: params.get('utm_source') ?? '',
@@ -65,7 +65,7 @@ class AnalyticsTracker {
 
   public init() {
     if (this.isInitialized) return;
-    
+
     // Track initial page view
     this.track('page_view', {
       path: window.location.pathname,
@@ -75,13 +75,13 @@ class AnalyticsTracker {
 
     // Track scroll depth
     this.trackScrollDepth();
-    
+
     // Track time on page
     this.trackTimeOnPage();
-    
+
     // Track CTA clicks
     this.trackCTAClicks();
-    
+
     // Track form submissions
     this.trackFormSubmissions();
 
@@ -140,13 +140,15 @@ class AnalyticsTracker {
     document.addEventListener('click', (e) => {
       const target = e.target as HTMLElement;
       const ctaButton = target.closest('a[href*="calendly"], button[data-cta="true"]');
-      
+
       if (ctaButton) {
+        const sectionId = target.closest('section')?.id;
         this.track('cta_click', {
           buttonText: ctaButton.textContent?.trim(),
-          buttonType: ctaButton.tagName.toLowerCase(),
-          href: (ctaButton as HTMLAnchorElement).href,
-          location: 'hero' || target.closest('section')?.id,
+          buttonType: cta"]);
+
+        // Fixed line – use the section id if it exists, otherwise fall back to 'hero'
+        location: sectionId ?? 'hero',
         });
       }
     });
@@ -189,12 +191,12 @@ class AnalyticsTracker {
     if (typeof window !== 'undefined') {
       const events = JSON.parse(localStorage.getItem('wdt_analytics_events') || '[]');
       events.push(event);
-      
+
       // Keep only last 1000 events
       if (events.length > 1000) {
         events.splice(0, events.length - 1000);
       }
-      
+
       localStorage.setItem('wdt_analytics_events', JSON.stringify(events));
     }
   }
@@ -219,7 +221,7 @@ class AnalyticsTracker {
 
   public getMetrics() {
     const events = this.getEvents();
-    
+
     return {
       totalVisitors: new Set(events.filter(e => e.event === 'page_view').map(e => e.sessionId)).size,
       totalCTAClicks: events.filter(e => e.event === 'cta_click').length,
