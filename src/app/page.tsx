@@ -66,14 +66,14 @@ export default function Home() {
       <HeroSection 
         nextSlotDate={nextSlotDate} 
         onCTAClick={handleCTAClick}
-        heroRef={heroRef}
+        heroRef={heroRef as React.RefObject<HTMLDivElement>}
       />
       
-      <ProblemSection problemRef={problemRef} />
-      <SolutionSection solutionRef={solutionRef} />
-      <HowItWorksSection howItWorksRef={howItWorksRef} />
-      <ProofSection proofRef={proofRef} />
-      <PricingSection pricingRef={pricingRef} onCTAClick={handleCTAClick} />
+      <ProblemSection problemRef={problemRef as React.RefObject<HTMLDivElement>} />
+      <SolutionSection solutionRef={solutionRef as React.RefObject<HTMLDivElement>} />
+      <HowItWorksSection howItWorksRef={howItWorksRef as React.RefObject<HTMLDivElement>} />
+      <ProofSection proofRef={proofRef as React.RefObject<HTMLDivElement>} />
+      <PricingSection pricingRef={pricingRef as React.RefObject<HTMLDivElement>} onCTAClick={handleCTAClick} />
       <FAQSection />
       <Footer />
 
