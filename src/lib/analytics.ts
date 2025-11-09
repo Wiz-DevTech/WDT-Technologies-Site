@@ -31,16 +31,16 @@ class AnalyticsTracker {
     return `session_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
   }
 
-  private getUTMParameters(): Record<string, string | undefined> {
+  private getUTMParameters(): Record<string, string> {
     if (typeof window === 'undefined') return {};
     
     const params = new URLSearchParams(window.location.search);
     return {
-      utmSource: params.get('utm_source') || undefined,
-      utmMedium: params.get('utm_medium') || undefined,
-      utmCampaign: params.get('utm_campaign') || undefined,
-      utmContent: params.get('utm_content') || undefined,
-      utmTerm: params.get('utm_term') || undefined,
+      utmSource: params.get('utm_source') ?? '',
+      utmMedium: params.get('utm_medium') ?? '',
+      utmCampaign: params.get('utm_campaign') ?? '',
+      utmContent: params.get('utm_content') ?? '',
+      utmTerm: params.get('utm_term') ?? '',
     };
   }
 
