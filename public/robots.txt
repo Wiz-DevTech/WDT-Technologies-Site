@@ -12,5 +12,7 @@ Allow: /
 
 User-agent: *
 Allow: /
+Allow: /sitemap.xml
 
-Sitemap: https://wizdevtech.com/sitemap.xml
+# Sitemap location
+Sitemap: https://wiz-devtech.github.io/WDT-Technologies-Site/sitemap.xml

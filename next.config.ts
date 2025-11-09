@@ -1,25 +1,58 @@
-import type { NextConfig } from "next";
-
-const nextConfig: NextConfig = {
-  /* config options here */
+/** @type {import('next').NextConfig} */
+const nextConfig = {
+  // SEO and performance optimizations
+  reactStrictMode: true,  // Changed to true for better SEO and development experience
+  swcMinify: true,
+  
+  // Image optimization for SEO
+  images: {
+    domains: ['wiz-devtech.github.io'],
+    formats: ['image/webp', 'image/avif'],
+  },
+  
+  // Security headers for SEO and security
+  async headers() {
+    return [
+      {
+        source: '/(.*)',
+        headers: [
+          {
+            key: 'X-Frame-Options',
+            value: 'DENY',
+          },
+          {
+            key: 'X-Content-Type-Options',
+            value: 'nosniff',
+          },
+          {
+            key: 'Referrer-Policy',
+            value: 'origin-when-cross-origin',
+          },
+        ],
+      },
+    ];
+  },
+  
+  // Existing configuration
   typescript: {
     ignoreBuildErrors: true,
   },
-  // 禁用 Next.js 热重载，由 nodemon 处理重编译
-  reactStrictMode: false,
+  
+  // Disable Next.js hot reload (handled by nodemon)
   webpack: (config, { dev }) => {
     if (dev) {
-      // 禁用 webpack 的热模块替换
+      // Disable webpack's hot module replacement
       config.watchOptions = {
-        ignored: ['**/*'], // 忽略所有文件变化
+        ignored: ['**/*'], // Ignore all file changes
       };
     }
     return config;
   },
+  
+  // Ignore ESLint errors during builds
   eslint: {
-    // 构建时忽略ESLint错误
     ignoreDuringBuilds: true,
   },
 };
 
-export default nextConfig;
+module.exports = nextConfig;
