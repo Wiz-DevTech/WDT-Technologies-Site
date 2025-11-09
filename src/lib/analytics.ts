@@ -31,7 +31,7 @@ class AnalyticsTracker {
     return `session_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
   }
 
-  private getUTMParameters(): Record<string, string> {
+  private getUTMParameters(): Record<string, string | undefined> {
     if (typeof window === 'undefined') return {};
     
     const params = new URLSearchParams(window.location.search);
