@@ -102,7 +102,6 @@ class AnalyticsTracker {
       if (scrollPercent > maxScroll) {
         maxScroll = scrollPercent;
 
-        // Track when user reaches certain scroll depths
         scrollThresholds.forEach(threshold => {
           if (scrollPercent >= threshold && !this.hasTracked(`scroll_${threshold}`)) {
             this.track('scroll_depth', {
@@ -145,10 +144,9 @@ class AnalyticsTracker {
         const sectionId = target.closest('section')?.id;
         this.track('cta_click', {
           buttonText: ctaButton.textContent?.trim(),
-          buttonType: cta"]);
-
-        // Fixed line – use the section id if it exists, otherwise fall back to 'hero'
-        location: sectionId ?? 'hero',
+          buttonType: ctaButton.tagName.toLowerCase(),
+          href: (ctaButton as HTMLAnchorElement).href,
+          location: sectionId ?? 'hero',
         });
       }
     });
@@ -186,13 +184,10 @@ class AnalyticsTracker {
   }
 
   private sendToAnalyticsService(event: AnalyticsEvent) {
-    // This would integrate with your actual analytics service
-    // For now, we'll store in localStorage for demonstration
     if (typeof window !== 'undefined') {
       const events = JSON.parse(localStorage.getItem('wdt_analytics_events') || '[]');
       events.push(event);
 
-      // Keep only last 1000 events
       if (events.length > 1000) {
         events.splice(0, events.length - 1000);
       }
