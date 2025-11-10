@@ -4,6 +4,7 @@ import "./globals.css";
 import { Toaster } from "@/components/ui/toaster";
 import SEOAnalytics from '@/components/SEOAnalytics';
 import { ThemeProvider } from "@/components/theme-provider";
+import { Analytics } from "@/components/analytics";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -52,28 +53,23 @@ export const metadata: Metadata = {
     locale: "en_US",
     title: "WDT Technologies - The Invisible Systems Architect™",
     description: "I build the operating system your business runs on — in 4 weeks, fixed price, zero ongoing management.",
-     url: 'https://wdt-technologies-site.vercel.app',
+    url: 'https://wdt-technologies-site.vercel.app',
     siteName: "WDT Technologies",
     images: [
       {
-        url: "https://wiz-devtech.github.io/WDT-Technologies-Site/og-image.jpg",
+        url: "https://wdt-technologies-site.vercel.app/og-image.jpg", // FIXED: Use production domain
         width: 1200,
         height: 630,
-        alt: "WDT Technologies- The Invisible Systems Architect™",
+        alt: "WDT Technologies - The Invisible Systems Architect™",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    locale: "en_US",
-    type: "website",
-  },
-  twitter: {
-    card: "summary_large_image",
     title: "WDT Technologies - The Invisible Systems Architect™",
-    description: 'Fixed-price 4-week business OS builds using Notion, Airtable, and automation., "fixed price, zero ongoing management."',
-    images: ["https://wiz-devtech.github.io/WDT-Technologies-Site/og-image.jpg"],
-   creator: '@wdttech',
+    description: 'Fixed-price 4-week business OS builds using Notion, Airtable, and automation.',
+    images: ["https://wdt-technologies-site.vercel.app/og-image.jpg"], // FIXED: Use production domain
+    creator: '@wdttech',
   },
   robots: {
     index: true,
@@ -89,11 +85,6 @@ export const metadata: Metadata = {
   verification: {
     // Add Google Search Console verification here
     // google: 'verification-token',
-  },
-  
-  other: {
-    "theme-color": "#0f172a",
-    "msapplication-TileColor": "#0f172a",
   },
 };
 
@@ -132,20 +123,18 @@ export default function RootLayout({
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
       </head>
-      <body className={inter.className}>
+      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
         <ThemeProvider
           attribute="class"
           defaultTheme="system"
           enableSystem
           disableTransitionOnChange
         >
-            {children}
-            <Analytics />
-            </ThemeProvider>
-            <Toaster />
-            <SEOAnalytics />
-          </div>
-        </div>
+          {children}
+          <Analytics />
+          <Toaster />
+          <SEOAnalytics />
+        </ThemeProvider>
       </body>
     </html>
   );
