@@ -57,7 +57,7 @@ export const metadata: Metadata = {
     siteName: "WDT Technologies",
     images: [
       {
-        url: "https://wdt-technologies-site.vercel.app/og-image.jpg", // FIXED: Use production domain
+        url: "https://wdt-technologies-site.vercel.app/og-image.jpg",
         width: 1200,
         height: 630,
         alt: "WDT Technologies - The Invisible Systems Architect™",
@@ -68,7 +68,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "WDT Technologies - The Invisible Systems Architect™",
     description: 'Fixed-price 4-week business OS builds using Notion, Airtable, and automation.',
-    images: ["https://wdt-technologies-site.vercel.app/og-image.jpg"], // FIXED: Use production domain
+    images: ["https://wdt-technologies-site.vercel.app/og-image.jpg"],
     creator: '@wdttech',
   },
   robots: {
@@ -84,6 +84,7 @@ export const metadata: Metadata = {
   },
   verification: {
     // Add Google Search Console verification here
+    
     // google: 'verification-token',
   },
 };
@@ -96,6 +97,18 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
+        {/* Google Tag Manager */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+            new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+            j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+            'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+            })(window,document,'script','dataLayer','GTM-NJ4VRN75');`
+          }}
+        />
+        {/* End Google Tag Manager */}
+
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
@@ -124,6 +137,15 @@ export default function RootLayout({
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
       </head>
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+        {/* Google Tag Manager (noscript) */}
+        <noscript
+          dangerouslySetInnerHTML={{
+            __html: `<iframe src="https://www.googletagmanager.com/ns.html?id=GTM-NJ4VRN75"
+            height="0" width="0" style="display:none;visibility:hidden"></iframe>`
+          }}
+        />
+        {/* End Google Tag Manager (noscript) */}
+        
         <ThemeProvider
           attribute="class"
           defaultTheme="system"
