@@ -1,20 +1,38 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import Script from 'next/script';
 import "./globals.css";
 import { Toaster } from "@/components/ui/toaster";
 import SEOAnalytics from '@/components/SEOAnalytics';
 import { ThemeProvider } from "@/components/theme-provider";
 import { Analytics } from "@/components/analytics";
 
-const geistSans = Geist({
+// Safe font configuration that won't break the build
+const geistSans = {
   variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
+  className: "font-sans"
+};
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
+const geistMono = {
+  variable: "--font-geist-mono", 
+  className: "font-mono"
+};
+
+// Try to load Google Fonts using dynamic import (ESLint compliant)
+if (typeof window !== 'undefined') {
+  import("next/font/google").then(({ Geist, Geist_Mono }) => {
+    Object.assign(geistSans, Geist({
+      variable: "--font-geist-sans",
+      subsets: ["latin"],
+    }));
+    
+    Object.assign(geistMono, Geist_Mono({
+      variable: "--font-geist-mono",
+      subsets: ["latin"],
+    }));
+  }).catch(() => {
+    console.warn("Google Fonts not available, using system fonts");
+  });
+}
 
 export const metadata: Metadata = {
   title: {
@@ -84,7 +102,6 @@ export const metadata: Metadata = {
   },
   verification: {
     // Add Google Search Console verification here
-    
     // google: 'verification-token',
   },
 };
@@ -97,8 +114,10 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
-        {/* Google Tag Manager */}
-        <script
+        {/* Google Tag Manager using next/script */}
+        <Script
+          id="gtm-script"
+          strategy="afterInteractive"
           dangerouslySetInnerHTML={{
             __html: `(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
             new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
@@ -107,7 +126,6 @@ export default function RootLayout({
             })(window,document,'script','dataLayer','GTM-NJ4VRN75');`
           }}
         />
-        {/* End Google Tag Manager */}
 
         <script
           type="application/ld+json"
@@ -133,8 +151,6 @@ export default function RootLayout({
             })
           }}
         />
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
       </head>
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
         {/* Google Tag Manager (noscript) */}
@@ -144,7 +160,6 @@ export default function RootLayout({
             height="0" width="0" style="display:none;visibility:hidden"></iframe>`
           }}
         />
-        {/* End Google Tag Manager (noscript) */}
         
         <ThemeProvider
           attribute="class"

@@ -7,35 +7,37 @@ interface AnalyticsDashboardProps {
   isVisible?: boolean;
 }
 
-export default function AnalyticsDashboard({ isVisible = false }: AnalyticsDashboardProps) {
-  // 🚨 CRITICAL SECURITY FIX - MOVE INSIDE FUNCTION
-  if (process.env.NODE_ENV === 'production') {
-    return null;
-  }
+// Move environment check outside component
+const isDevelopment = process.env.NODE_ENV !== 'production';
 
+export default function AnalyticsDashboard({ isVisible = false }: AnalyticsDashboardProps) {
   const [metrics, setMetrics] = useState<any>(null);
   const [events, setEvents] = useState<any[]>([]);
 
   useEffect(() => {
-    if (isVisible) {
-      // Initialize analytics if not already done
-      analytics.init();
-      
-      // Update metrics every 5 seconds when visible
-      const interval = setInterval(() => {
-        setMetrics(analytics.getMetrics());
-        setEvents(analytics.getEvents().slice(-10)); // Last 10 events
-      }, 5000);
-
-      // Initial load
-      setMetrics(analytics.getMetrics());
-      setEvents(analytics.getEvents().slice(-10));
-
-      return () => clearInterval(interval);
+    // Early return inside useEffect - this is allowed
+    if (!isDevelopment || !isVisible) {
+      return;
     }
+
+    // Initialize analytics if not already done
+    analytics.init();
+    
+    // Update metrics every 5 seconds when visible
+    const interval = setInterval(() => {
+      setMetrics(analytics.getMetrics());
+      setEvents(analytics.getEvents().slice(-10)); // Last 10 events
+    }, 5000);
+
+    // Initial load
+    setMetrics(analytics.getMetrics());
+    setEvents(analytics.getEvents().slice(-10));
+
+    return () => clearInterval(interval);
   }, [isVisible]);
 
-  if (!isVisible || !metrics) {
+  // Don't render in production or if not visible
+  if (!isDevelopment || !isVisible || !metrics) {
     return null;
   }
 
