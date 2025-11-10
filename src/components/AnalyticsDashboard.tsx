@@ -7,7 +7,9 @@ interface AnalyticsDashboardProps {
   isVisible?: boolean;
 }
 
-export default function AnalyticsDashboard({ isVisible = false }: AnalyticsDashboardProps) {
+export default function AnalyticsDashboard({ isVisible = false }: AnalyticsDashboardProps) if (process.env.NODE_ENV === 'production') {
+    return null;
+  }{
   const [metrics, setMetrics] = useState<any>(null);
   const [events, setEvents] = useState<any[]>([]);
 
