@@ -49,7 +49,7 @@ export const metadata: Metadata = {
   metadataBase: new URL('https://wdt-technologies-site.vercel.app'),
   openGraph: {
     type: "website",
-    locale: "en_US"
+    locale: "en_US",
     title: "WDT Technologies - The Invisible Systems Architect™",
     description: "I build the operating system your business runs on — in 4 weeks, fixed price, zero ongoing management.",
      url: 'https://wdt-technologies-site.vercel.app',
