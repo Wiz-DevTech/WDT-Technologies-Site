@@ -4,7 +4,7 @@
 import * as React from 'react';
 import { ThemeProvider as NextThemesProvider } from 'next-themes';
 
-// Define the props type locally instead of importing
+// Remove the broken import and define props locally
 interface ThemeProviderProps {
   children: React.ReactNode;
   attribute?: string;
