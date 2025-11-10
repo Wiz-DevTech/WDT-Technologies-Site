@@ -141,11 +141,12 @@ private trackCTAClicks() {
     const ctaButton = target.closest('a[href*="calendly"], button[data-cta="true"]');
     
     if (ctaButton) {
+      const closestSection = target.closest('section');
       this.track('cta_click', {
         buttonText: ctaButton.textContent?.trim(),
         buttonType: ctaButton.tagName.toLowerCase(),
         href: (ctaButton as HTMLAnchorElement).href,
-        location: target.closest('section')?.id || 'hero', // Fixed line
+        location: closestSection?.id || 'hero',
       });
     }
   });
