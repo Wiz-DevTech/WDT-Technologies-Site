@@ -1,0 +1,28 @@
+﻿name: Deploy DID Configuration
+on:
+  push:
+    branches: [ main ]
+    paths: [ ''.well-known/**'' ]
+  workflow_dispatch:
+jobs:
+  verify-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify DID Configuration
+        run: |
+          echo "🔍 Verifying DID files..."
+          if ! jq empty .well-known/did.json; then
+            echo "❌ Invalid JSON in did.json"
+            exit 1
+          fi
+          echo "✅ DID configuration is valid JSON"
+      - name: Setup Pages
+        uses: actions/configure-pages@v3
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v2
+        with:
+          path: ''.''
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v2
