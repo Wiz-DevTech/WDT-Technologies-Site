@@ -1,0 +1,2 @@
+# .github
+"WizDevTech DID Configuration"

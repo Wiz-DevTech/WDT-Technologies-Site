@@ -1,32 +1,283 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
+// prisma/schema.prisma
 generator client {
   provider = "prisma-client-js"
 }
 
 datasource db {
   provider = "sqlite"
-  url      = env("DATABASE_URL")
+  url      = "file:./dev.db"
 }
 
+// ============ ENUMS ============
+enum UserRole {
+  USER
+  ADMIN
+  SUPER_ADMIN
+}
+
+enum StorageType {
+  LOCAL
+  S3
+  IPFS
+  ARWEAVE
+}
+
+// ============ USER MANAGEMENT & AUTH ============
 model User {
-  id        String   @id @default(cuid())
-  email     String   @unique
-  name      String?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id            String   @id @default(cuid())
+  email         String   @unique
+  name          String?
+  image         String?
+  role          UserRole @default(USER)
+  emailVerified DateTime?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  
+  // Authentication
+  accounts      Account[]
+  sessions      Session[]
+  
+  // Profile
+  profile       Profile?
+  permissions   UserPermission[]
+  
+  // Email Integration
+  emailAccounts EmailAccount[]
+  userEmails    UserEmail[]
+  
+  // Analytics
+  analyticsSessions AnalyticsSession[]
+  processedEmails   ProcessedEmail[]
+  emailAnalytics    EmailAnalytics[]
+  
+  @@map("users")
 }
 
-model Post {
-  id        String   @id @default(cuid())
-  title     String
-  content   String?
-  published Boolean  @default(false)
-  authorId  String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+model Profile {
+  id          String   @id @default(cuid())
+  userId      String   @unique
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  company     String?
+  jobTitle    String?
+  phone       String?
+  bio         String?
+  avatar      String?
+  timezone    String   @default("UTC")
+  preferences String?  // JSON string for user preferences
+  
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  @@map("profiles")
+}
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String?
+  access_token      String?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+  session_state     String?
+
+  @@unique([provider, providerAccountId])
+  @@map("accounts")
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  expires      DateTime
+  
+  @@map("sessions")
+}
+
+model Permission {
+  id          String           @id @default(cuid())
+  name        String           @unique
+  description String?
+  category    String
+  
+  users       UserPermission[]
+  
+  @@map("permissions")
+}
+
+model UserPermission {
+  id           String     @id @default(cuid())
+  userId       String
+  user         User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  permission   Permission @relation(fields: [permissionId], references: [id])
+  permissionId String
+  grantedAt    DateTime   @default(now())
+  grantedBy    String?
+  
+  @@unique([userId, permissionId])
+  @@map("user_permissions")
+}
+
+// ============ DECENTRALIZED EMAIL SYSTEM ============
+model EmailAccount {
+  id           String   @id @default(cuid())
+  userId       String
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  emailAddress String
+  provider     String   // gmail, outlook, imap, etc.
+  settings     String?  // Encrypted connection settings (JSON string)
+  isActive     Boolean  @default(true)
+  lastSync     DateTime?
+  syncEnabled  Boolean  @default(true)
+  
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  
+  // Relationships
+  userEmails   UserEmail[]
+  syncSessions SyncSession[]
+  
+  @@unique([userId, emailAddress])
+  @@map("email_accounts")
+}
+
+model UserEmail {
+  id             String      @id @default(cuid())
+  userId         String
+  user           User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  emailAccountId String
+  emailAccount   EmailAccount @relation(fields: [emailAccountId], references: [id])
+  
+  // Decentralized Storage References
+  storageId      String      @unique // Reference to decentralized storage
+  storageType    StorageType @default(LOCAL)
+  storagePath    String      // Path to actual email file
+  
+  // Email Metadata (for search/filtering)
+  messageId      String      @unique // Original email message ID
+  subject        String?
+  from           String      // Sender email
+  fromName       String?     // Sender name
+  to             String      // JSON string of recipients [{"email": "", "name": ""}]
+  cc             String?     // JSON string of CC recipients
+  bcc            String?     // JSON string of BCC recipients
+  receivedAt     DateTime
+  sentAt         DateTime?
+  size           Int
+  folder         String      @default("inbox") // inbox, sent, drafts, archive, spam, trash
+  isRead         Boolean     @default(false)
+  isStarred      Boolean     @default(false)
+  isImportant    Boolean     @default(false)
+  labels         String?     // JSON string of labels ["work", "personal"]
+  hasAttachments Boolean     @default(false)
+  threadId       String?     // Email thread/conversation ID
+  inReplyTo      String?     // Message ID this email replies to
+  
+  // Search Optimization
+  searchText     String?     // Plain text for full-text search (body + subject)
+  
+  // Relationships
+  attachments    Attachment[]
+  
+  createdAt      DateTime    @default(now())
+  updatedAt      DateTime    @updatedAt
+  
+  @@unique([userId, messageId])
+  @@map("user_emails")
+}
+
+model Attachment {
+  id           String      @id @default(cuid())
+  userEmailId  String
+  userEmail    UserEmail   @relation(fields: [userEmailId], references: [id], onDelete: Cascade)
+  
+  // Decentralized Storage References
+  storageId    String      @unique
+  storageType  StorageType @default(LOCAL)
+  storagePath  String
+  
+  // Attachment Metadata
+  filename     String
+  mimeType     String
+  size         Int
+  checksum     String?     // For file integrity verification
+  contentId    String?     // For inline images in HTML emails
+  
+  createdAt    DateTime    @default(now())
+  
+  @@map("attachments")
+}
+
+// ============ EMAIL SYNC & PROCESSING ============
+model SyncSession {
+  id             String   @id @default(cuid())
+  emailAccountId String
+  emailAccount   EmailAccount @relation(fields: [emailAccountId], references: [id], onDelete: Cascade)
+  startedAt      DateTime @default(now())
+  completedAt    DateTime?
+  status         String   @default("running") // running, completed, failed
+  emailsFetched  Int      @default(0)
+  emailsProcessed Int     @default(0)
+  error          String?
+  
+  @@map("sync_sessions")
+}
+
+model ProcessedEmail {
+  id          String   @id @default(cuid())
+  messageId   String   @unique
+  processedAt DateTime @default(now())
+  action      String   // stored, archived, deleted
+  userId      String?
+  user        User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  @@map("processed_emails")
+}
+
+// ============ ANALYTICS & MONITORING ============
+model AnalyticsSession {
+  id          String   @id @default(cuid())
+  userId      String?
+  user        User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  sessionId   String   @unique
+  userAgent   String?
+  referrer    String?
+  utmSource   String?
+  utmMedium   String?
+  utmCampaign String?
+  createdAt   DateTime @default(now())
+  
+  @@map("analytics_sessions")
+}
+
+model EmailAnalytics {
+  id              String   @id @default(cuid())
+  userId          String
+  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  date            DateTime @default(now())
+  emailsReceived  Int      @default(0)
+  emailsSent      Int      @default(0)
+  storageUsed     Int      @default(0) // in bytes
+  attachmentsCount Int     @default(0)
+  
+  @@unique([userId, date])
+  @@map("email_analytics")
+}
+
+// ============ SYSTEM CONFIGURATION ============
+model SystemConfig {
+  id          String   @id @default(cuid())
+  key         String   @unique
+  value       String?
+  description String?
+  updatedAt   DateTime @updatedAt
+  updatedBy   String?
+  
+  @@map("system_config")
 }

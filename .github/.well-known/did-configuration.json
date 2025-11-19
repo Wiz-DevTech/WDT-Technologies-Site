@@ -1,0 +1,26 @@
+// /scripts/finalize-did-config.js
+const fs = require('fs');
+const path = require('path');
+
+const DID_CONFIG = {
+  // ... use the JSON above
+};
+
+const WELL_KNOWN_PATH = path.join(__dirname, '..', '.well-known');
+
+// Ensure directory exists
+if (!fs.existsSync(WELL_KNOWN_PATH)) {
+  fs.mkdirSync(WELL_KNOWN_PATH, { recursive: true });
+}
+
+// Write DID configuration
+fs.writeFileSync(
+  path.join(WELL_KNOWN_PATH, 'did.json'),
+  JSON.stringify(DID_CONFIG, null, 2)
+);
+
+console.log('✅ DID configuration created with your addresses!');
+console.log('📋 Address Summary:');
+console.log(`   XRPL: r9PnNgPMvyhZJU5LoXXuqGbWfH3Qec3wgW`);
+console.log(`   Polygon: 0xdC78593EEeB39bD7C8507Ff9e4CB0e7B25eBA048`);
+console.log(`   Arbitrum: 0xdC78593EEeB39bD7C8507Ff9e4CB0e7B25eBA048`);
