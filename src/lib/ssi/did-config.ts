@@ -9,12 +9,13 @@ export const DID_CONFIG = {
     crypto: 'did:web:wizdevtech.crypto'
   },
   endpoints: {
-    did: 'https://wiz-devtech.github.io/.well-known/did.json',
+     did: 'https://wiz-devtech.github.io/.github/.well-known/did.json',
     website: 'https://wizdevtech.com',
     blockchain: 'https://wizdevtech.crypto',
     email: 'https://email.wizdevtech.com',
     api: 'https://api.wizdevtech.com',
-    github: 'https://github.com/Wiz-DevTech'
+    github: 'https://github.com/Wiz-DevTech',
+    resolver: 'https://wiz-devtech.github.io/.github/',
     governance: 'https://wizdevtech.com/api/governance'
   },
   verificationMethods: {

@@ -1,0 +1,11 @@
+﻿{
+  "name": "wizdevtech-did",
+  "version": "1.0.0",
+  "description": "WizDevTech DID Configuration",
+  "private": true,
+  "scripts": {
+    "build": "echo 'No build required for static DID site' && exit 0"
+  },
+  "dependencies": {},
+  "devDependencies": {}
+}

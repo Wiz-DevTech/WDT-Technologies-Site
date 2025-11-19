@@ -1,65 +1,61 @@
-{
+﻿{
   "@context": [
     "https://www.w3.org/ns/did/v1",
     "https://w3id.org/security/suites/ed25519-2020/v1",
     "https://w3id.org/security/suites/secp256k1-2019/v1"
   ],
-  "id": "did:web:wizdevtech.com",
+  "id": "did:web:wiz-devtech.github.io",
   "alsoKnownAs": [
+    "did:web:wizdevtech.com",
     "did:pkh:xrpl:r9PnNgPMvyhZJU5LoXXuqGbWfH3Qec3wgW",
     "did:pkh:polygon:0xdC78593EEeB39bD7C8507Ff9e4CB0e7B25eBA048",
     "did:pkh:arbitrum:0xdC78593EEeB39bD7C8507Ff9e4CB0e7B25eBA048"
   ],
   "verificationMethod": [
     {
-      "id": "did:web:wizdevtech.com#xrpl",
+      "id": "did:web:wiz-devtech.github.io#xrpl",
       "type": "Ed25519VerificationKey2020",
-      "controller": "did:web:wizdevtech.com",
+      "controller": "did:web:wiz-devtech.github.io",
       "blockchainAccountId": "xrpl:r9PnNgPMvyhZJU5LoXXuqGbWfH3Qec3wgW"
     },
     {
-      "id": "did:web:wizdevtech.com#polygon",
+      "id": "did:web:wiz-devtech.github.io#polygon",
       "type": "EcdsaSecp256k1VerificationKey2019",
-      "controller": "did:web:wizdevtech.com",
+      "controller": "did:web:wiz-devtech.github.io",
       "blockchainAccountId": "polygon:0xdC78593EEeB39bD7C8507Ff9e4CB0e7B25eBA048@eip155:137"
     },
     {
-      "id": "did:web:wizdevtech.com#arbitrum",
+      "id": "did:web:wiz-devtech.github.io#arbitrum",
       "type": "EcdsaSecp256k1VerificationKey2019",
-      "controller": "did:web:wizdevtech.com",
+      "controller": "did:web:wiz-devtech.github.io",
       "blockchainAccountId": "arbitrum:0xdC78593EEeB39bD7C8507Ff9e4CB0e7B25eBA048@eip155:42161"
     }
   ],
   "authentication": [
-    "did:web:wizdevtech.com#xrpl",
-    "did:web:wizdevtech.com#polygon",
-    "did:web:wizdevtech.com#arbitrum"
+    "did:web:wiz-devtech.github.io#xrpl",
+    "did:web:wiz-devtech.github.io#polygon",
+    "did:web:wiz-devtech.github.io#arbitrum"
   ],
   "assertionMethod": [
-    "did:web:wizdevtech.com#xrpl",
-    "did:web:wizdevtech.com#polygon", 
-    "did:web:wizdevtech.com#arbitrum"
+    "did:web:wiz-devtech.github.io#xrpl",
+    "did:web:wiz-devtech.github.io#polygon",
+    "did:web:wiz-devtech.github.io#arbitrum"
   ],
   "service": [
     {
-      "id": "#website",
+      "id": "did:web:wiz-devtech.github.io#website",
       "type": "LinkedDomains",
       "serviceEndpoint": "https://wizdevtech.com"
     },
     {
-      "id": "#blockchain",
-      "type": "LinkedDomains",
-      "serviceEndpoint": "https://wizdevtech.crypto"
+      "id": "did:web:wiz-devtech.github.io#github",
+      "type": "GitHubRepository",
+      "serviceEndpoint": "https://github.com/Wiz-DevTech"
     },
     {
-      "id": "#email-system",
-      "type": "DecentralizedWebNode",
-      "serviceEndpoint": "https://email.wizdevtech.com"
-    },
-    {
-      "id": "#token-governance",
-      "type": "TokenGovernanceService", 
-      "serviceEndpoint": "https://wizdevtech.com/api/governance"
+      "id": "did:web:wiz-devtech.github.io#resolver",
+      "type": "DIDResolution",
+      "serviceEndpoint": "https://wiz-devtech.github.io/.well-known/did.json"
     }
   ],
   "created": "2024-01-01T00:00:00Z",
