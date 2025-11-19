@@ -1,7 +1,7 @@
 // /WDT-Technologies-Site/src/lib/ssi/did-config.ts
 export const DID_CONFIG = {
   primary: {
-    web: 'did:web:wiz-devtech.github.io', // Your GitHub DID
+    web: 'did:web:wiz-devtech.github.io:.github', // Your GitHub DID
     domain: 'did:web:wizdevtech.com',
     xrpl: 'did:pkh:xrpl:r9PnNgPMvyhZJU5LoXXuqGbWfH3Qec3wgW',
     polygon: 'did:pkh:polygon:0xdC78593EEeB39bD7C8507Ff9e4CB0e7B25eBA048',
